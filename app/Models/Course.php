@@ -13,6 +13,10 @@ class Course extends Model
     {
         return $this->BelongsTo(User::class); 
     }
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
     public function getExcerptAttribute()
     {
         return substr($this->description,0,80) . "...";
@@ -20,5 +24,13 @@ class Course extends Model
     public function posts()
     {
         return $this->hasMany(Post::class);
+    }
+    public function similar()
+    {
+        return $this->where('category_id', $this->category_id)
+            ->where('id', '!=',$this->id)
+            ->with('user')
+            ->take(2)
+            ->get();
     }
 }
